@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hadiah kecil buat kamu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Nunito+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --malam:#060d1c;
+    --malam-2:#0d1c33;
+    --kelopak:#9fdcff;
+    --kelopak-terang:#e7f7ff;
+    --rumput:#5fae6b;
+    --tinta:#dfe9f5;
+    --tinta-lembut:#8fa4bd;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(120% 90% at 50% 100%, var(--malam-2) 0%, var(--malam) 60%, #03060f 100%);
+    color:var(--tinta);
+    font-family:"Nunito Sans", system-ui, sans-serif;
+    overflow:hidden;
+  }
+  .layar{
+    position:fixed; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:24px;
+    transition:opacity .9s ease;
+  }
+  .sembunyi{opacity:0; pointer-events:none}
+
+  /* ---------- gerbang password ---------- */
+  #gerbang{gap:22px; text-align:center}
+  .nama{
+    font-family:"Cormorant Garamond", serif;
+    font-size:clamp(2.6rem, 11vw, 4.6rem);
+    letter-spacing:.06em;
+    color:var(--kelopak-terang);
+    text-shadow:0 0 18px rgba(120,200,255,.55), 0 0 60px rgba(60,140,220,.35);
+    min-height:1.2em;
+  }
+  .nama .garis{
+    display:inline-block; width:2px; height:.9em; margin-left:.06em;
+    background:var(--kelopak-terang); vertical-align:-.08em;
+    animation:kedip 1s steps(1) infinite;
+  }
+  @keyframes kedip{50%{opacity:0}}
+  .sapaan{
+    font-size:clamp(.95rem,4vw,1.1rem); color:var(--tinta-lembut);
+    max-width:32ch; line-height:1.7; font-weight:300;
+  }
+  .kunci{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+  input[type=password]{
+    width:min(280px,70vw); padding:14px 18px;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(159,220,255,.28);
+    border-radius:999px;
+    color:var(--tinta); font:inherit; letter-spacing:.14em; text-align:center;
+    outline:none; transition:border-color .25s, box-shadow .25s;
+  }
+  input[type=password]:focus{border-color:var(--kelopak); box-shadow:0 0 0 4px rgba(120,200,255,.14)}
+  button{
+    padding:14px 26px; border:0; border-radius:999px; cursor:pointer;
+    background:linear-gradient(180deg,#bfe8ff,#6fb9ee);
+    color:#06233b; font:inherit; font-weight:600;
+    transition:transform .2s, box-shadow .25s;
+    box-shadow:0 8px 26px rgba(80,170,240,.28);
+  }
+  button:hover{transform:translateY(-2px); box-shadow:0 12px 32px rgba(80,170,240,.4)}
+  button:focus-visible, input:focus-visible{outline:2px solid var(--kelopak-terang); outline-offset:3px}
+  .petunjuk{font-size:.85rem; color:var(--tinta-lembut); min-height:1.4em; max-width:34ch; text-align:center}
+  .salah{color:#ffb4b4}
+  .goyang{animation:goyang .45s}
+  @keyframes goyang{
+    20%{transform:translateX(-9px)} 40%{transform:translateX(8px)}
+    60%{transform:translateX(-5px)} 80%{transform:translateX(4px)}
+  }
+
+  /* ---------- taman ---------- */
+  #taman{justify-content:flex-end; padding:0}
+  #adegan{position:absolute; inset:0; width:100%; height:100%}
+
+  .kunang{
+    position:absolute; width:3px; height:3px; border-radius:50%;
+    background:#dff3ff; box-shadow:0 0 8px 2px rgba(180,225,255,.8);
+    opacity:0; animation:melayang linear forwards;
+  }
+  @keyframes melayang{
+    0%{opacity:0; transform:translateY(0) scale(.6)}
+    15%{opacity:.9}
+    85%{opacity:.6}
+    100%{opacity:0; transform:translateY(-160px) scale(1.1)}
+  }
+  .gugur{
+    position:absolute; top:-8vh;
+    background:linear-gradient(180deg,#eaf9ff,#6fc3f2);
+    border-radius:60% 60% 60% 0;
+    opacity:0; filter:drop-shadow(0 0 6px rgba(140,210,255,.55));
+    animation:jatuh linear forwards;
+  }
+  @keyframes jatuh{
+    0%{opacity:0; transform:translate(0,0) rotate(0deg)}
+    10%{opacity:.95}
+    50%{transform:translate(42px, 55vh) rotate(200deg)}
+    90%{opacity:.7}
+    100%{opacity:0; transform:translate(-34px, 115vh) rotate(460deg)}
+  }
+
+  /* ---------- foto di dalam taman ---------- */
+  #galeri{
+    position:absolute; top:6vh; left:0; right:0; z-index:2;
+    display:flex; justify-content:center; align-items:flex-start;
+    gap:clamp(10px, 4vw, 30px); flex-wrap:wrap; padding:0 18px;
+    pointer-events:none;
+  }
+  .bingkai{
+    background:linear-gradient(180deg,#f7fbff,#dcecf8);
+    padding:8px 8px 22px; border-radius:4px;
+    box-shadow:0 14px 34px rgba(0,0,0,.55), 0 0 26px rgba(120,200,255,.28);
+    opacity:0;
+    animation:masukFoto 1.2s ease forwards, melambai 6s ease-in-out infinite alternate;
+  }
+  .bingkai img{
+    display:block; width:clamp(78px, 24vw, 150px); aspect-ratio:3/4;
+    object-fit:cover; background:#0c1728;
+  }
+  .bingkai figcaption{
+    font-size:.7rem; color:#456; text-align:center; padding-top:6px;
+    font-family:"Cormorant Garamond",serif; font-style:italic; letter-spacing:.02em;
+  }
+  @keyframes masukFoto{from{opacity:0; transform:translateY(-26px) scale(.9)} to{opacity:1}}
+  @keyframes melambai{
+    from{transform:translateY(-6px) rotate(-3deg)}
+    to{transform:translateY(6px) rotate(3deg)}
+  }
+
+  #pesan{
+    position:relative; z-index:2; text-align:center;
+    padding:0 26px 7vh; max-width:34ch;
+  }
+  #pesan p{
+    font-family:"Cormorant Garamond", serif;
+    font-size:clamp(1.15rem, 5.2vw, 1.6rem);
+    line-height:1.6; margin-bottom:.7em;
+    opacity:0; transform:translateY(12px);
+    animation:naik 1.4s ease forwards;
+    text-shadow:0 2px 20px rgba(0,0,0,.95);
+  }
+  #pesan .dari{
+    font-family:"Nunito Sans",sans-serif; font-size:.9rem; font-weight:300;
+    letter-spacing:.18em; color:var(--tinta-lembut);
+  }
+  @keyframes naik{to{opacity:1; transform:translateY(0)}}
+
+  /* ---------- tombol musik ---------- */
+  #musik{
+    position:fixed; right:18px; bottom:18px; z-index:5;
+    width:50px; height:50px; border-radius:50%; border:1px solid rgba(159,220,255,.35);
+    background:rgba(8,18,34,.65); backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; opacity:0; pointer-events:none;
+    transition:opacity .6s ease, transform .25s ease;
+  }
+  #musik.tampil{opacity:1; pointer-events:auto}
+  #musik:hover{transform:scale(1.07)}
+  #musik svg{width:20px; height:20px; fill:var(--kelopak-terang)}
+  #musik .gelombang{display:flex; align-items:flex-end; gap:2px; height:16px}
+  #musik .gelombang span{
+    width:3px; background:var(--kelopak-terang); border-radius:2px;
+    animation:goyangSuara .9s ease-in-out infinite;
+  }
+  #musik .gelombang span:nth-child(1){height:6px; animation-delay:0s}
+  #musik .gelombang span:nth-child(2){height:16px; animation-delay:.15s}
+  #musik .gelombang span:nth-child(3){height:10px; animation-delay:.3s}
+  @keyframes goyangSuara{0%,100%{transform:scaleY(.4)} 50%{transform:scaleY(1)}}
+  #musik.diam .gelombang span{animation-play-state:paused; transform:scaleY(.4)}
+</style>
+</head>
+<body>
+
+<!-- ============ YANG BOLEH KAMU UBAH ADA DI SINI ============ -->
+<script>
+  const KADO = {
+    nama: "Munggarani",                         // nama yang diketik di awal
+    sapaan: "aku ada hadiah spesial buat kamu!!",
+    password: "Im08031994!!",                    // kata sandinya
+    petunjuk: "Petunjuk: passwordnya adalah",
+
+    // Foto yang muncul di dalam taman bunga.
+    // Taruh file fotonya satu folder dengan file HTML ini, lalu tulis namanya.
+    // Kosongkan jadi  foto: []  kalau tidak mau pakai foto.
+    foto: [
+      { src: "foto1.jpg", tulisan: "pocong mumun tapi cantik" },
+      { src: "foto2.jpg", tulisan: "ini juga pocong mumun tapi berhijab" },
+    ],
+
+    // Musik latar yang diputar saat bunga mulai mekar.
+    // Taruh file musiknya satu folder dengan file HTML ini, lalu tulis namanya.
+    // Kosongkan jadi  musik: ""  kalau tidak mau pakai musik.
+    musik: "lagu.mp3",
+
+    pesan: [
+      "Bunga-bunga ini mekar tengah malam,",
+      "sama seperti rasa yang tumbuh diam-diam",
+      "setiap kali aku ingat kamu.",
+      "Jaga Kesehetan Selalu yaa"
+    ],
+    dari: "— dari aku"
+  };
+</script>
+<!-- ========================================================== -->
+
+<section class="layar" id="gerbang">
+  <h1 class="nama" id="ketik"><span class="garis"></span></h1>
+  <p class="sapaan" id="sapaan"></p>
+  <div class="kunci">
+    <input type="password" id="sandi" placeholder="kata sandi" autocomplete="off" aria-label="Kata sandi">
+    <button id="buka">Buka hadiah</button>
+  </div>
+  <p class="petunjuk" id="petunjuk"></p>
+</section>
+
+<section class="layar sembunyi" id="taman" aria-hidden="true">
+  <svg id="adegan" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+  <div id="galeri"></div>
+  <div id="pesan"></div>
+</section>
+
+<audio id="lagu" loop preload="none"></audio>
+<button id="musik" type="button" aria-label="Putar atau jeda musik">
+  <div class="gelombang"><span></span><span></span><span></span></div>
+</button>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const NS = "http://www.w3.org/2000/svg";
+  const acak = (a,b) => a + Math.random()*(b-a);
+
+  const el = (tag, attr) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attr) e.setAttribute(k, attr[k]);
+    return e;
+  };
+  // gerakan SMIL: jalan di semua browser, tidak dimatikan setelan animasi Windows
+  const gerak = (tipe, values, dur, mulai) => el("animateTransform", {
+    attributeName:"transform", attributeType:"XML", type:tipe,
+    values:values, dur:dur+"s", begin:mulai+"s",
+    repeatCount:"indefinite", calcMode:"spline",
+    keyTimes:"0;0.5;1", keySplines:"0.4 0 0.6 1;0.4 0 0.6 1", additive:"replace"
+  });
+  const tumbuh = (tipe, dari, ke, dur, mulai) => el("animateTransform", {
+    attributeName:"transform", attributeType:"XML", type:tipe,
+    from:dari, to:ke, dur:dur+"s", begin:mulai+"s", fill:"freeze",
+    calcMode:"spline", keySplines:"0.2 .9 .3 1"
+  });
+
+  /* ---------- layar 1 ---------- */
+  $("#sapaan").textContent = KADO.sapaan;
+  $("#petunjuk").textContent = KADO.petunjuk;
+  const judul = $("#ketik"), garis = judul.querySelector(".garis");
+  let i = 0;
+  (function ketik(){
+    if (i < KADO.nama.length){
+      judul.insertBefore(document.createTextNode(KADO.nama[i++]), garis);
+      setTimeout(ketik, 190);
+    }
+  })();
+
+  const input = $("#sandi"), petunjuk = $("#petunjuk");
+  function coba(){
+    if (input.value.trim().toLowerCase() === KADO.password.toLowerCase()) return mulaiTaman();
+    petunjuk.textContent = "Kata sandinya belum pas. Coba lagi, kamu pasti tahu.";
+    petunjuk.classList.add("salah");
+    input.classList.remove("goyang"); void input.offsetWidth; input.classList.add("goyang");
+    input.select();
+  }
+  $("#buka").addEventListener("click", coba);
+  input.addEventListener("keydown", e => { if (e.key === "Enter") coba(); });
+  input.focus();
+
+  /* ---------- layar 2 ---------- */
+  function mulaiTaman(){
+    const gerbang = $("#gerbang"), taman = $("#taman");
+    gerbang.classList.add("sembunyi");
+    taman.classList.remove("sembunyi");
+    taman.setAttribute("aria-hidden","false");
+    setTimeout(() => gerbang.remove(), 1000);
+    gambarTaman();
+    pasangFoto();
+    pasangMusik();
+    tulisPesan();
+    setInterval(kunang, 400);
+    setTimeout(() => { gugur(); setInterval(gugur, 1300); }, 4200);
+  }
+
+  const TANAH = 600;
+
+  function gambarTaman(){
+    const svg = $("#adegan");
+
+    const defs = el("defs", {});
+    defs.innerHTML = `
+      <linearGradient id="g-kelopak" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#eaf9ff"/><stop offset="60%" stop-color="#9fdcff"/><stop offset="100%" stop-color="#4aa6e8"/>
+      </linearGradient>
+      <linearGradient id="g-daun" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#5fc8f0"/><stop offset="100%" stop-color="#1d6fa8"/>
+      </linearGradient>
+      <linearGradient id="g-tangkai" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stop-color="#2f7f6b"/><stop offset="100%" stop-color="#3fa8d8"/>
+      </linearGradient>
+      <radialGradient id="g-cahaya">
+        <stop offset="0%" stop-color="rgba(120,200,255,.32)"/><stop offset="100%" stop-color="rgba(120,200,255,0)"/>
+      </radialGradient>`;
+    svg.appendChild(defs);
+
+    // cahaya yang berdenyut di balik rumpun
+    const pusatCahaya = el("g", {transform:"translate(400 400)"});
+    const nyala = el("g", {});
+    nyala.appendChild(gerak("scale", ".86;1.14;.86", 6.5, 0));
+    nyala.appendChild(el("ellipse", {cx:0, cy:0, rx:300, ry:250, fill:"url(#g-cahaya)"}));
+    pusatCahaya.appendChild(nyala);
+    svg.appendChild(pusatCahaya);
+
+    // rumput
+    for (let n = 0; n < 48; n++){
+      const x = acak(30, 770), t = acak(50, 125), lebar = acak(-28, 28);
+      const dasar = el("g", {transform:`translate(${x} ${TANAH})`});
+      const buka = el("g", {transform:"scale(0)"});
+      buka.appendChild(tumbuh("scale", "0", "1", .9, .1 + n*.03));
+      const ayun = el("g", {});
+      ayun.appendChild(gerak("rotate", "-5;5;-5", acak(3.5,6), -acak(0,4)));
+      ayun.appendChild(el("path", {
+        d:`M0 0 C ${lebar*.2} ${-t*.5}, ${lebar*.6} ${-t*.8}, ${lebar} ${-t}`,
+        stroke:"var(--rumput)", "stroke-width":acak(2,3.6), fill:"none",
+        "stroke-linecap":"round", opacity:acak(.35,.8)
+      }));
+      buka.appendChild(ayun); dasar.appendChild(buka); svg.appendChild(dasar);
+    }
+
+    // bunga
+    const daftar = [
+      {x:400, tinggi:330, skala:1.00, tunda:0},
+      {x:300, tinggi:250, skala:.82, tunda:.5},
+      {x:508, tinggi:268, skala:.86, tunda:.8},
+      {x:218, tinggi:186, skala:.66, tunda:1.2},
+      {x:590, tinggi:200, skala:.70, tunda:1.4},
+      {x:352, tinggi:150, skala:.56, tunda:1.8},
+      {x:462, tinggi:132, skala:.52, tunda:2.0}
+    ];
+
+    daftar.forEach(b => {
+      const pangkal = 400 + (b.x - 400) * .18;
+      const hx = b.x - pangkal, hy = -b.tinggi;
+      const lengkung = (b.x - 400) * .35;
+
+      const dasar = el("g", {transform:`translate(${pangkal} ${TANAH})`});
+      const ayun = el("g", {});
+      ayun.appendChild(gerak("rotate", "-3.6;3.6;-3.6", acak(4.5,7.5), -acak(0,4)));
+      dasar.appendChild(ayun); svg.appendChild(dasar);
+
+      // tangkai tumbuh dari tanah
+      const tangkai = el("path", {
+        d:`M0 0 C ${lengkung*.3} ${-b.tinggi*.45}, ${hx - lengkung*.2} ${-b.tinggi*.75}, ${hx} ${hy}`,
+        stroke:"url(#g-tangkai)", "stroke-width":7*b.skala, fill:"none",
+        "stroke-linecap":"round", pathLength:"1",
+        "stroke-dasharray":"1", "stroke-dashoffset":"1"
+      });
+      tangkai.appendChild(el("animate", {
+        attributeName:"stroke-dashoffset", from:"1", to:"0",
+        dur:"2.4s", begin:b.tunda+"s", fill:"freeze"
+      }));
+      ayun.appendChild(tangkai);
+
+      // daun yang mengibas
+      for (let d = 0; d < 4; d++){
+        const t = .18 + d*.18;
+        const dx = hx*t, dy = -b.tinggi*t;
+        const sisi = d % 2 ? 1 : -1;
+        const sudut = sisi * acak(18,36);
+        const titik = el("g", {transform:`translate(${dx} ${dy})`});
+        const buka = el("g", {transform:"scale(0)"});
+        buka.appendChild(tumbuh("scale", "0", "1", 1, b.tunda + .5 + d*.22));
+        const kibas = el("g", {transform:`rotate(${sudut})`});
+        kibas.appendChild(gerak("rotate", `${sudut-7};${sudut+7};${sudut-7}`, acak(3.2,5.4), -acak(0,3)));
+        kibas.appendChild(el("ellipse", {
+          cx:sisi*34*b.skala, cy:0, rx:34*b.skala, ry:13*b.skala, fill:"url(#g-daun)", opacity:.95
+        }));
+        buka.appendChild(kibas); titik.appendChild(buka); ayun.appendChild(titik);
+      }
+
+      // kepala bunga: mekar, mengangguk, dan bernapas
+      const titik = el("g", {transform:`translate(${hx} ${hy})`});
+      const mekar = el("g", {transform:"scale(0)"});
+      mekar.appendChild(tumbuh("scale", "0", "1", 1.3, b.tunda + 1.9));
+      const angguk = el("g", {});
+      angguk.appendChild(gerak("rotate", "-9;9;-9", acak(2.8,4.6), -acak(0,3)));
+      const napas = el("g", {transform:`scale(${b.skala})`});
+      napas.appendChild(gerak("scale",
+        `${(b.skala*.93).toFixed(3)};${(b.skala*1.08).toFixed(3)};${(b.skala*.93).toFixed(3)}`,
+        acak(3.4,5.2), -acak(0,3)));
+      for (let p = 0; p < 6; p++){
+        napas.appendChild(el("ellipse", {cx:0, cy:-22, rx:15, ry:24, transform:`rotate(${p*60})`, fill:"url(#g-kelopak)"}));
+      }
+      napas.appendChild(el("circle", {cx:0, cy:0, r:11, fill:"#f6ffd8"}));
+      napas.appendChild(el("circle", {cx:0, cy:0, r:5, fill:"#e4d68a"}));
+      angguk.appendChild(napas); mekar.appendChild(angguk);
+      titik.appendChild(mekar); ayun.appendChild(titik);
+    });
+  }
+
+  /* ---------- foto ---------- */
+  function pasangFoto(){
+    const galeri = $("#galeri");
+    (KADO.foto || []).forEach((f, n) => {
+      const bingkai = document.createElement("figure");
+      bingkai.className = "bingkai";
+      bingkai.style.animationDelay = (3.4 + n*.5) + "s, " + (3.4 + n*.5) + "s";
+      bingkai.style.animationDuration = "1.2s, " + (5 + n*.7) + "s";
+      const img = document.createElement("img");
+      img.src = f.src; img.alt = f.tulisan || "";
+      img.onerror = () => bingkai.remove();      // foto belum ada? bingkainya hilang sendiri
+      bingkai.appendChild(img);
+      if (f.tulisan){
+        const cap = document.createElement("figcaption");
+        cap.textContent = f.tulisan;
+        bingkai.appendChild(cap);
+      }
+      galeri.appendChild(bingkai);
+    });
+  }
+
+  /* ---------- musik ---------- */
+  function pasangMusik(){
+    if (!KADO.musik) return;
+    const audio = $("#lagu"), tombol = $("#musik");
+    audio.src = KADO.musik;
+    audio.volume = 0;
+    tombol.classList.add("tampil");
+
+    function naikkanVolume(){
+      let v = 0;
+      const t = setInterval(() => {
+        v = Math.min(1, v + .05);
+        audio.volume = v;
+        if (v >= 1) clearInterval(t);
+      }, 90);
+    }
+
+    audio.play().then(naikkanVolume).catch(() => {
+      // browser memblokir putar-otomatis bersuara; tunggu ketukan pertama
+      tombol.classList.add("diam");
+      const putarSaatDisentuh = () => {
+        audio.play().then(naikkanVolume).catch(() => {});
+        document.removeEventListener("pointerdown", putarSaatDisentuh);
+      };
+      document.addEventListener("pointerdown", putarSaatDisentuh, { once:true });
+    });
+
+    tombol.addEventListener("click", () => {
+      if (audio.paused){
+        audio.play().catch(() => {});
+        tombol.classList.remove("diam");
+      } else {
+        audio.pause();
+        tombol.classList.add("diam");
+      }
+    });
+    audio.addEventListener("pause", () => tombol.classList.add("diam"));
+    audio.addEventListener("play", () => tombol.classList.remove("diam"));
+    audio.onerror = () => tombol.classList.remove("tampil"); // file musik tidak ditemukan
+  }
+
+  function kunang(){
+    const k = document.createElement("div");
+    k.className = "kunang";
+    k.style.left = acak(8, 92) + "vw";
+    k.style.top = acak(40, 88) + "vh";
+    const lama = acak(4, 8);
+    k.style.animationDuration = lama + "s";
+    document.body.appendChild(k);
+    setTimeout(() => k.remove(), lama*1000 + 400);
+  }
+
+  function gugur(){
+    const k = document.createElement("div");
+    k.className = "gugur";
+    const besar = acak(.6, 1.25);
+    k.style.left = acak(5, 95) + "vw";
+    k.style.width = (12*besar) + "px";
+    k.style.height = (14*besar) + "px";
+    const lama = acak(7, 13);
+    k.style.animationDuration = lama + "s";
+    document.body.appendChild(k);
+    setTimeout(() => k.remove(), lama*1000 + 500);
+  }
+
+  function tulisPesan(){
+    const kotak = $("#pesan");
+    KADO.pesan.forEach((baris, n) => {
+      const p = document.createElement("p");
+      p.textContent = baris;
+      p.style.animationDelay = (5 + n*.9) + "s";
+      kotak.appendChild(p);
+    });
+    const dari = document.createElement("p");
+    dari.className = "dari";
+    dari.textContent = KADO.dari;
+    dari.style.animationDelay = (5 + KADO.pesan.length*.9 + .6) + "s";
+    kotak.appendChild(dari);
+  }
+})();
+</script>
+</body>
+</html>
